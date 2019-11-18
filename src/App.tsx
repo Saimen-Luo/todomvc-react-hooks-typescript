@@ -5,7 +5,7 @@ import 'todomvc-common/base.css'
 import {ListItem, Action, ADD_TODO, TOGGLE_ALL, TOGGLE_COMPLETED, DESTROY_ITEM} from "./interfaces";
 import TodoItem from "./components/todoItem";
 
-export const AppContest: Context<any> = createContext({})
+export const AppContest: Context<any> = createContext({}) // 需要引入Context并指定类型为Context<any>
 
 const App: React.FC = () => {
     const initList: ListItem[] = [
