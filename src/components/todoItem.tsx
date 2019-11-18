@@ -1,6 +1,6 @@
 import React, {useContext, useState, useRef, useEffect} from 'react';
 
-import {DESTROY_ITEM, ListItem, TOGGLE_COMPLETED} from "../interfaces";
+import {DESTROY_ITEM, ListItem, TOGGLE_COMPLETED, UPDATE_ITEM} from "../interfaces";
 import {AppContest} from "../App";
 
 interface Props {
@@ -33,6 +33,38 @@ const TodoItem: React.FC<Props> = (props) => {
         // 需要上面 useRef<HTMLInputElement> 否则 && 也不行
         // 参考 https://dev.to/busypeoples/notes-on-typescript-react-hooks-28j2
     })
+    const [title, setTitle] = useState('')
+    useEffect(() => {
+        // 挂载时同步item.title 和 title
+        let mounted = false
+        if (!mounted) {
+            setTitle(item.title)
+            mounted = true
+        }
+    }, [item.title])
+    const saveTitle: (event: React.ChangeEvent<HTMLInputElement>) => void = (event) => {
+        setTitle(event.target.value)
+    }
+    const updateOrDelTodo = () => {
+        setEditing(false)
+        const titleTrim = title.trim()
+        if (!titleTrim) {
+            handleDestroy()
+        } else {
+            const newList = list.map((i: ListItem) => {
+                return item.id === i.id ? {...i, title} : i
+            })
+            dispatch({type: UPDATE_ITEM, data: newList})
+        }
+    }
+    const handleKeyUp: (event: React.KeyboardEvent<HTMLInputElement>) => void = (event) => {
+        if (event.keyCode === 13) { // 回车
+            updateOrDelTodo()
+        } else if (event.keyCode === 27) { // 按esc，恢复title并退出编辑
+            setEditing(false)
+            setTitle(item.title)
+        }
+    }
     return (
         <li className={`${item.completed ? "completed" : undefined} ${editing ? "editing" : undefined}`}>
             <div className="view">
@@ -43,7 +75,13 @@ const TodoItem: React.FC<Props> = (props) => {
                 <label onDoubleClick={toggleEditing}>{item.title}</label>
                 <button className="destroy" onClick={handleDestroy}></button>
             </div>
-            <input className="edit" value="Create a TodoMVC template" ref={inputRef}/>
+            <input className="edit"
+                   value={title}
+                   ref={inputRef}
+                   onChange={saveTitle}
+                   onBlur={updateOrDelTodo}
+                   onKeyUp={handleKeyUp}
+            />
         </li>
     );
 };

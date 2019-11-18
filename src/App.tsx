@@ -2,7 +2,7 @@ import React, {useState, useReducer, createContext, Context} from 'react';
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
-import {ListItem, Action, ADD_TODO, TOGGLE_ALL, TOGGLE_COMPLETED, DESTROY_ITEM} from "./interfaces";
+import {ListItem, Action, ADD_TODO, TOGGLE_ALL, TOGGLE_COMPLETED, DESTROY_ITEM, UPDATE_ITEM} from "./interfaces";
 import TodoItem from "./components/todoItem";
 
 export const AppContest: Context<any> = createContext({}) // 需要引入Context并指定类型为Context<any>
@@ -27,6 +27,7 @@ const App: React.FC = () => {
             case TOGGLE_ALL:
             case TOGGLE_COMPLETED:
             case DESTROY_ITEM:
+            case UPDATE_ITEM:
                 return action.data
             default:
                 return list
