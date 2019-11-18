@@ -2,11 +2,8 @@ import React, {useState} from 'react';
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
-interface listItem {
-    id: number,
-    title: string,
-    completed: boolean
-}
+import {listItem} from "./interfaces";
+import TodoItem from "./components/todoItem";
 
 const App: React.FC = () => {
     const initList: listItem[] = [
@@ -34,22 +31,7 @@ const App: React.FC = () => {
                         <input id="toggle-all" className="toggle-all" type="checkbox"/>
                         <label htmlFor="toggle-all">Mark all as complete</label>
                         <ul className="todo-list">
-                            <li className="completed">
-                                <div className="view">
-                                    <input className="toggle" type="checkbox" checked/>
-                                    <label>Taste JavaScript</label>
-                                    <button className="destroy"></button>
-                                </div>
-                                <input className="edit" value="Create a TodoMVC template"/>
-                            </li>
-                            <li>
-                                <div className="view">
-                                    <input className="toggle" type="checkbox"/>
-                                    <label>Buy a unicorn</label>
-                                    <button className="destroy"></button>
-                                </div>
-                                <input className="edit" value="Rule the web"/>
-                            </li>
+                            {list.map((item) => <TodoItem item={item}/>)}
                         </ul>
                     </section>
                     <footer className="footer">
