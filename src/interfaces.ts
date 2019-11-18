@@ -6,7 +6,8 @@ export interface ListItem {
 
 export interface Action {
     type: string,
-    data: ListItem
+    data: ListItem[]
 }
 
 export const ADD_TODO = 'add_todo'
+export const TOGGLE_ALL = 'toggle_all'

@@ -2,7 +2,7 @@ import React, {useState, useReducer, useContext} from 'react';
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
-import {ListItem, Action, ADD_TODO} from "./interfaces";
+import {ListItem, Action, ADD_TODO, TOGGLE_ALL} from "./interfaces";
 import TodoItem from "./components/todoItem";
 
 const App: React.FC = () => {
@@ -22,7 +22,8 @@ const App: React.FC = () => {
     const reducer: (list: ListItem[], action: Action) => ListItem[] = (list, action) => {
         switch (action.type) {
             case ADD_TODO:
-                return [...list, action.data]
+            case TOGGLE_ALL:
+                return action.data
             default:
                 return list
         }
@@ -38,16 +39,25 @@ const App: React.FC = () => {
         if (event.keyCode === 13) {
             const titleTrim = title.trim()
             if (titleTrim) {
+                const newList = [...list, {
+                    id: list.length ? list[list.length - 1].id + 1 : 1,
+                    title: titleTrim,
+                    completed: false
+                }]
                 dispatch({
-                    type: ADD_TODO, data: {
-                        id: list.length ? list[list.length - 1].id + 1 : 1,
-                        title: titleTrim,
-                        completed: false
-                    }
+                    type: ADD_TODO, data: newList
                 })
             }
-        setTitle('')
+            setTitle('')
         }
+    }
+    const [allCompleted, setAllCompleted] = useState(false)
+    const toggleAll: (event: React.ChangeEvent<HTMLInputElement>) => void = (event) => {
+        setAllCompleted(event.target.checked)
+        const newList = list.map((item) => {
+            return {...item, completed: event.target.checked}
+        })
+        dispatch({type: TOGGLE_ALL, data: newList})
     }
 
     return (
@@ -63,7 +73,10 @@ const App: React.FC = () => {
                 </header>
                 {list.length ? (<>
                     <section className="main">
-                        <input id="toggle-all" className="toggle-all" type="checkbox"/>
+                        <input id="toggle-all" className="toggle-all" type="checkbox"
+                               onChange={toggleAll}
+                               checked={allCompleted}
+                        />
                         <label htmlFor="toggle-all">Mark all as complete</label>
                         <ul className="todo-list">
                             {list.map((item) => <TodoItem item={item} key={item.id}/>)}
