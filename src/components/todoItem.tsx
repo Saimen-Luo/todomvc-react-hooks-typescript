@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 
-import {ListItem, TOGGLE_COMPLETED} from "../interfaces";
+import {DESTROY_ITEM, ListItem, TOGGLE_COMPLETED} from "../interfaces";
 import {AppContest} from "../App";
 
 interface Props {
@@ -17,6 +17,12 @@ const TodoItem: React.FC<Props> = (props) => {
         })
         dispatch({type: TOGGLE_COMPLETED, data: newList})
     }
+    const handleDestroy = () => {
+        const newList = list.filter((i: ListItem) => {
+            return item.id !== i.id
+        })
+        dispatch({type: DESTROY_ITEM, data: newList})
+    }
     return (
         <li className={item.completed ? "completed" : undefined}>
             <div className="view">
@@ -25,7 +31,7 @@ const TodoItem: React.FC<Props> = (props) => {
                        onChange={toggleCompleted}
                 />
                 <label>{item.title}</label>
-                <button className="destroy"></button>
+                <button className="destroy" onClick={handleDestroy}></button>
             </div>
             <input className="edit" value="Create a TodoMVC template"/>
         </li>

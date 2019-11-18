@@ -2,7 +2,7 @@ import React, {useState, useReducer, createContext, Context} from 'react';
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
-import {ListItem, Action, ADD_TODO, TOGGLE_ALL, TOGGLE_COMPLETED} from "./interfaces";
+import {ListItem, Action, ADD_TODO, TOGGLE_ALL, TOGGLE_COMPLETED, DESTROY_ITEM} from "./interfaces";
 import TodoItem from "./components/todoItem";
 
 export const AppContest: Context<any> = createContext({})
@@ -26,6 +26,7 @@ const App: React.FC = () => {
             case ADD_TODO:
             case TOGGLE_ALL:
             case TOGGLE_COMPLETED:
+            case DESTROY_ITEM:
                 return action.data
             default:
                 return list
