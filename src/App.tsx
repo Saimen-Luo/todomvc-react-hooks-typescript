@@ -32,6 +32,9 @@ const App: React.FC = () => {
     // const [list, setList] = useState(initList)
     const reducer: (list: ListItem[], action: Action) => ListItem[] = (list, action) => {
         switch (action.type) {
+            // todo reducer 重构，如果data传递newList，直接返回，完全没必要分这么多case
+            // 方案 1. 所有case直接合并为一个 UPDATE_LIST
+            // 方案 2. 保持case分开，把修改逻辑放到reducer这里，Action要用联合类型，data?可选
             case ADD_TODO:
             case TOGGLE_ALL:
             case TOGGLE_COMPLETED:
@@ -77,7 +80,7 @@ const App: React.FC = () => {
     const itemsLeft = list.filter((item) => {
         return !item.completed
     })
-    const clearCompleted =() => {
+    const clearCompleted = () => {
         const newList = list.filter((item) => {
             return !item.completed
         })
