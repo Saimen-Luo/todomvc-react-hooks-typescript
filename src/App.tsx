@@ -64,7 +64,9 @@ const App: React.FC = () => {
         })
         dispatch({type: TOGGLE_ALL, data: newList})
     }
-
+    const itemsLeft = list.filter((item) => {
+        return !item.completed
+    })
 
     return (
         <div className="App">
@@ -91,7 +93,7 @@ const App: React.FC = () => {
                         </ul>
                     </section>
                     <footer className="footer">
-                        <span className="todo-count"><strong>0</strong> item left</span>
+                        <span className="todo-count"><strong>{itemsLeft.length}</strong> {itemsLeft.length === 1 ? 'item' : 'items'} left</span>
                         <ul className="filters">
                             <li>
                                 <a className="selected" href="#/">All</a>
