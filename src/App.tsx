@@ -1,9 +1,11 @@
-import React, {useState, useReducer, useContext} from 'react';
+import React, {useState, useReducer, createContext, Context} from 'react';
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
-import {ListItem, Action, ADD_TODO, TOGGLE_ALL} from "./interfaces";
+import {ListItem, Action, ADD_TODO, TOGGLE_ALL, TOGGLE_COMPLETED} from "./interfaces";
 import TodoItem from "./components/todoItem";
+
+export const AppContest: Context<any> = createContext({})
 
 const App: React.FC = () => {
     const initList: ListItem[] = [
@@ -23,6 +25,7 @@ const App: React.FC = () => {
         switch (action.type) {
             case ADD_TODO:
             case TOGGLE_ALL:
+            case TOGGLE_COMPLETED:
                 return action.data
             default:
                 return list
@@ -60,6 +63,7 @@ const App: React.FC = () => {
         dispatch({type: TOGGLE_ALL, data: newList})
     }
 
+
     return (
         <div className="App">
             <section className="todoapp">
@@ -79,7 +83,9 @@ const App: React.FC = () => {
                         />
                         <label htmlFor="toggle-all">Mark all as complete</label>
                         <ul className="todo-list">
-                            {list.map((item) => <TodoItem item={item} key={item.id}/>)}
+                            <AppContest.Provider value={{list, dispatch}}>
+                                {list.map((item) => <TodoItem item={item} key={item.id}/>)}
+                            </AppContest.Provider>
                         </ul>
                     </section>
                     <footer className="footer">
