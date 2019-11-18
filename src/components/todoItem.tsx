@@ -1,9 +1,9 @@
 import React from 'react';
 
-import {listItem} from "../interfaces";
+import {ListItem} from "../interfaces";
 
 interface Props {
-    item: listItem
+    item: ListItem
 }
 
 

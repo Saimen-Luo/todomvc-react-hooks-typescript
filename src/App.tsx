@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useReducer, useContext} from 'react';
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
-import {listItem} from "./interfaces";
+import {ListItem, Action, ADD_TODO} from "./interfaces";
 import TodoItem from "./components/todoItem";
 
 const App: React.FC = () => {
-    const initList: listItem[] = [
+    const initList: ListItem[] = [
         {
             id: 1,
             title: 'xxx',
@@ -18,20 +18,55 @@ const App: React.FC = () => {
             completed: true
         },
     ]
-    const [list, setList] = useState(initList)
+    // const [list, setList] = useState(initList)
+    const reducer: (list: ListItem[], action: Action) => ListItem[] = (list, action) => {
+        switch (action.type) {
+            case ADD_TODO:
+                return [...list, action.data]
+            default:
+                return list
+        }
+    }
+
+    const [list, dispatch] = useReducer(reducer, initList);
+    const [title, setTitle] = useState('')
+    const handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = (event) => {
+        setTitle(event.target.value)
+    }
+
+    const handleKeyUp: (event: React.KeyboardEvent<HTMLInputElement>) => void = (event) => {
+        if (event.keyCode === 13) {
+            const titleTrim = title.trim()
+            if (titleTrim) {
+                dispatch({
+                    type: ADD_TODO, data: {
+                        id: list.length ? list[list.length - 1].id + 1 : 1,
+                        title: titleTrim,
+                        completed: false
+                    }
+                })
+            }
+        setTitle('')
+        }
+    }
+
     return (
         <div className="App">
             <section className="todoapp">
                 <header className="header">
                     <h1>todos</h1>
-                    <input className="new-todo" placeholder="What needs to be done?" autoFocus/>
+                    <input className="new-todo" placeholder="What needs to be done?" autoFocus
+                           value={title}
+                           onChange={handleChange}
+                           onKeyUp={handleKeyUp}
+                    />
                 </header>
                 {list.length ? (<>
                     <section className="main">
                         <input id="toggle-all" className="toggle-all" type="checkbox"/>
                         <label htmlFor="toggle-all">Mark all as complete</label>
                         <ul className="todo-list">
-                            {list.map((item) => <TodoItem item={item}/>)}
+                            {list.map((item) => <TodoItem item={item} key={item.id}/>)}
                         </ul>
                     </section>
                     <footer className="footer">
