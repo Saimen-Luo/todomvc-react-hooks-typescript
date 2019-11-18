@@ -2,7 +2,16 @@ import React, {useState, useReducer, createContext, Context} from 'react';
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
-import {ListItem, Action, ADD_TODO, TOGGLE_ALL, TOGGLE_COMPLETED, DESTROY_ITEM, UPDATE_ITEM} from "./interfaces";
+import {
+    ListItem,
+    Action,
+    ADD_TODO,
+    TOGGLE_ALL,
+    TOGGLE_COMPLETED,
+    DESTROY_ITEM,
+    UPDATE_ITEM,
+    CLEAR_COMPLETED
+} from "./interfaces";
 import TodoItem from "./components/todoItem";
 
 export const AppContest: Context<any> = createContext({}) // 需要引入Context并指定类型为Context<any>
@@ -28,6 +37,7 @@ const App: React.FC = () => {
             case TOGGLE_COMPLETED:
             case DESTROY_ITEM:
             case UPDATE_ITEM:
+            case CLEAR_COMPLETED:
                 return action.data
             default:
                 return list
@@ -67,6 +77,12 @@ const App: React.FC = () => {
     const itemsLeft = list.filter((item) => {
         return !item.completed
     })
+    const clearCompleted =() => {
+        const newList = list.filter((item) => {
+            return !item.completed
+        })
+        dispatch({type: CLEAR_COMPLETED, data: newList})
+    }
 
     return (
         <div className="App">
@@ -93,7 +109,8 @@ const App: React.FC = () => {
                         </ul>
                     </section>
                     <footer className="footer">
-                        <span className="todo-count"><strong>{itemsLeft.length}</strong> {itemsLeft.length === 1 ? 'item' : 'items'} left</span>
+                        <span
+                            className="todo-count"><strong>{itemsLeft.length}</strong> {itemsLeft.length === 1 ? 'item' : 'items'} left</span>
                         <ul className="filters">
                             <li>
                                 <a className="selected" href="#/">All</a>
@@ -105,7 +122,8 @@ const App: React.FC = () => {
                                 <a href="#/completed">Completed</a>
                             </li>
                         </ul>
-                        <button className="clear-completed">Clear completed</button>
+                        {list.length === itemsLeft.length ? null :
+                            <button className="clear-completed" onClick={clearCompleted}>Clear completed</button>}
                     </footer>
                 </>) : null}
             </section>
