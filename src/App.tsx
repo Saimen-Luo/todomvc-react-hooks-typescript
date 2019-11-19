@@ -1,16 +1,11 @@
-import React, {useState, useReducer, createContext, Context} from 'react';
+import React, {useState, useReducer, createContext, Context, useEffect} from 'react';
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
 import {
     ListItem,
     Action,
-    ADD_TODO,
-    TOGGLE_ALL,
-    TOGGLE_COMPLETED,
-    DESTROY_ITEM,
-    UPDATE_ITEM,
-    CLEAR_COMPLETED
+    UPDATE_LIST
 } from "./interfaces";
 import TodoItem from "./components/todoItem";
 
@@ -35,12 +30,8 @@ const App: React.FC = () => {
             // todo reducer 重构，如果data传递newList，直接返回，完全没必要分这么多case
             // 方案 1. 所有case直接合并为一个 UPDATE_LIST
             // 方案 2. 保持case分开，把修改逻辑放到reducer这里，Action要用联合类型，data?可选
-            case ADD_TODO:
-            case TOGGLE_ALL:
-            case TOGGLE_COMPLETED:
-            case DESTROY_ITEM:
-            case UPDATE_ITEM:
-            case CLEAR_COMPLETED:
+            case UPDATE_LIST:
+                localStorage.setItem('todos-react-hooks-typescript', JSON.stringify(action.data))
                 return action.data
             default:
                 return list
@@ -63,7 +54,7 @@ const App: React.FC = () => {
                     completed: false
                 }]
                 dispatch({
-                    type: ADD_TODO, data: newList
+                    type: UPDATE_LIST, data: newList
                 })
             }
             setTitle('')
@@ -75,7 +66,7 @@ const App: React.FC = () => {
         const newList = list.map((item) => {
             return {...item, completed: event.target.checked}
         })
-        dispatch({type: TOGGLE_ALL, data: newList})
+        dispatch({type: UPDATE_LIST, data: newList})
     }
     const itemsLeft = list.filter((item) => {
         return !item.completed
@@ -84,8 +75,14 @@ const App: React.FC = () => {
         const newList = list.filter((item) => {
             return !item.completed
         })
-        dispatch({type: CLEAR_COMPLETED, data: newList})
+        dispatch({type: UPDATE_LIST, data: newList})
     }
+    // 持久化 读取
+    useEffect(() => {
+        const newList = JSON.parse(localStorage.getItem('todos-react-hooks-typescript') === null ? '[]' : localStorage.getItem('todos-react-hooks-typescript') as string)
+        dispatch({type: UPDATE_LIST, data: newList})
+        // console.log('getItem')
+    }, [])
 
     return (
         <div className="App">

@@ -1,6 +1,6 @@
 import React, {useContext, useState, useRef, useEffect} from 'react';
 
-import {DESTROY_ITEM, ListItem, TOGGLE_COMPLETED, UPDATE_ITEM} from "../interfaces";
+import {ListItem, UPDATE_LIST} from "../interfaces";
 import {AppContest} from "../App";
 
 interface Props {
@@ -15,13 +15,13 @@ const TodoItem: React.FC<Props> = (props) => {
         const newList = list.map((i: ListItem) => { // 需要指定i类型为ListItem
             return item.id === i.id ? {...i, completed: event.target.checked} : i
         })
-        dispatch({type: TOGGLE_COMPLETED, data: newList})
+        dispatch({type: UPDATE_LIST, data: newList})
     }
     const handleDestroy = () => {
         const newList = list.filter((i: ListItem) => {
             return item.id !== i.id
         })
-        dispatch({type: DESTROY_ITEM, data: newList})
+        dispatch({type: UPDATE_LIST, data: newList})
     }
     const [editing, setEditing] = useState(false)
     const toggleEditing = () => {
@@ -36,11 +36,8 @@ const TodoItem: React.FC<Props> = (props) => {
     const [title, setTitle] = useState('')
     useEffect(() => {
         // 挂载时同步item.title 和 title
-        let mounted = false
-        if (!mounted) {
-            setTitle(item.title)
-            mounted = true
-        }
+        // console.log('同步title')
+        setTitle(item.title)
     }, [item.title])
     const saveTitle: (event: React.ChangeEvent<HTMLInputElement>) => void = (event) => {
         setTitle(event.target.value)
@@ -54,7 +51,7 @@ const TodoItem: React.FC<Props> = (props) => {
             const newList = list.map((i: ListItem) => {
                 return item.id === i.id ? {...i, title} : i
             })
-            dispatch({type: UPDATE_ITEM, data: newList})
+            dispatch({type: UPDATE_LIST, data: newList})
         }
     }
     const handleKeyUp: (event: React.KeyboardEvent<HTMLInputElement>) => void = (event) => {
