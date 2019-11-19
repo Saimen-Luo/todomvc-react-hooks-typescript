@@ -1,4 +1,8 @@
+///<reference path="index.tsx"/>
 import React, {useState, useReducer, createContext, Context, useEffect} from 'react';
+import {Router} from "director/build/director.min";
+// Try `npm install @types/director` if it exists or add a new declaration (.d.ts) file containing `declare module 'director/build/director.min';`
+
 import 'todomvc-app-css/index.css'
 import 'todomvc-common/base.css'
 
@@ -77,12 +81,37 @@ const App: React.FC = () => {
         })
         dispatch({type: UPDATE_LIST, data: newList})
     }
+    const [currentHash, setCurrentHash] = useState('/')
     // 持久化 读取
     useEffect(() => {
         const newList = JSON.parse(localStorage.getItem('todos-react-hooks-typescript') === null ? '[]' : localStorage.getItem('todos-react-hooks-typescript') as string)
         dispatch({type: UPDATE_LIST, data: newList})
         // console.log('getItem')
+
+        // router
+        const router = new Router()
+        ;['/', '/active', '/completed'].forEach((item) => {
+            router.on(item, () => {
+                setCurrentHash(item)
+            })
+        })
+        router.configure({
+            notfound: () => {
+                window.location.hash = '/'
+            }
+        })
+        router.init()
     }, [])
+    let filterList = list
+    if (currentHash === '/active') {
+        filterList = list.filter((item) => {
+            return !item.completed
+        })
+    } else if (currentHash === '/completed') {
+        filterList = list.filter((item) => {
+            return item.completed
+        })
+    }
 
     return (
         <div className="App">
@@ -104,7 +133,7 @@ const App: React.FC = () => {
                         <label htmlFor="toggle-all">Mark all as complete</label>
                         <ul className="todo-list">
                             <AppContest.Provider value={{list, dispatch}}>
-                                {list.map((item) => <TodoItem item={item} key={item.id}/>)}
+                                {filterList.map((item) => <TodoItem item={item} key={item.id}/>)}
                             </AppContest.Provider>
                         </ul>
                     </section>
@@ -113,13 +142,15 @@ const App: React.FC = () => {
                             className="todo-count"><strong>{itemsLeft.length}</strong> {itemsLeft.length === 1 ? 'item' : 'items'} left</span>
                         <ul className="filters">
                             <li>
-                                <a className="selected" href="#/">All</a>
+                                <a className={currentHash === '/' ? "selected" : undefined} href="#/">All</a>
                             </li>
                             <li>
-                                <a href="#/active">Active</a>
+                                <a className={currentHash === '/active' ? "selected" : undefined}
+                                   href="#/active">Active</a>
                             </li>
                             <li>
-                                <a href="#/completed">Completed</a>
+                                <a className={currentHash === '/completed' ? "selected" : undefined}
+                                   href="#/completed">Completed</a>
                             </li>
                         </ul>
                         {list.length === itemsLeft.length ? null :

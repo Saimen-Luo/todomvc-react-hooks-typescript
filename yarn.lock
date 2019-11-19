@@ -3316,6 +3316,11 @@ dir-glob@2.0.0:
     arrify "^1.0.1"
     path-type "^3.0.0"
 
+director@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.npm.taobao.org/director/download/director-1.2.8.tgz#c6d9b4dd890e9aff5365183fe9cc8e73994cf2d5"
+  integrity sha1-xtm03YkOmv9TZRg/6cyOc5lM8tU=
+
 dns-equal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/dns-equal/download/dns-equal-1.0.0.tgz#b39e7f1da6eb0a75ba9c17324b34753c47e0654d"
