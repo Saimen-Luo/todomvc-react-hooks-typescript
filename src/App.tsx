@@ -1,5 +1,6 @@
 ///<reference path="index.tsx"/>
 import React, {useState, useReducer, createContext, Context, useEffect} from 'react';
+import {ApolloProvider} from '@apollo/react-hooks';
 
 import ApolloClient from 'apollo-boost';
 import {Router} from "director/build/director.min";
@@ -179,9 +180,11 @@ const App: React.FC = () => {
                         />
                         <label htmlFor="toggle-all">Mark all as complete</label>
                         <ul className="todo-list">
-                            <AppContest.Provider value={{list, dispatch, checkAllCompleted}}>
-                                {filterList.map((item) => <TodoItem item={item} key={item.id}/>)}
-                            </AppContest.Provider>
+                            <ApolloProvider client={client}>
+                                <AppContest.Provider value={{list, dispatch, checkAllCompleted}}>
+                                    {filterList.map((item) => <TodoItem item={item} key={item.id}/>)}
+                                </AppContest.Provider>
+                            </ApolloProvider>
                         </ul>
                     </section>
                     <footer className="footer">

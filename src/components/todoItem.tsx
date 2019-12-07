@@ -1,7 +1,10 @@
 import React, {useContext, useState, useRef, useEffect} from 'react';
+import {useMutation} from '@apollo/react-hooks';
 
 import {ListItem, UPDATE_LIST} from "../interfaces";
 import {AppContest} from "../App";
+import {delTodo} from "../queries/queries";
+
 
 interface Props {
     item: ListItem
@@ -19,12 +22,18 @@ const TodoItem: React.FC<Props> = (props) => {
         dispatch({type: UPDATE_LIST, data: newList})
         checkAllCompleted(newList)
     }
-    const handleDestroy = () => {
+    const handleDestroy = async () => {
         const newList = list.filter((i: ListItem) => {
             return item.id !== i.id
         })
         dispatch({type: UPDATE_LIST, data: newList})
         checkAllCompleted(newList)
+        deleteTodo({variables: {id: item.id}})
+            .then(() => {
+                console.log('数据库deleteTodo成功')
+            }).catch(() => {
+            alert('数据库deleteTodo失败')
+        })
     }
     const [editing, setEditing] = useState(false)
     const toggleEditing = () => {
@@ -65,6 +74,7 @@ const TodoItem: React.FC<Props> = (props) => {
             setTitle(item.title)
         }
     }
+    const [deleteTodo] = useMutation(delTodo)
     return (
         <li className={`${item.completed ? "completed" : undefined} ${editing ? "editing" : undefined}`}>
             <div className="view">
