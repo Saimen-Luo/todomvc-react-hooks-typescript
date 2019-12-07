@@ -62,6 +62,7 @@ const App: React.FC = () => {
                 })
             }
             setTitle('')
+            setAllCompleted(false)
         }
     }
     const [allCompleted, setAllCompleted] = useState(false)
@@ -87,6 +88,14 @@ const App: React.FC = () => {
         const newList = JSON.parse(localStorage.getItem('todos-react-hooks-typescript') === null ? '[]' : localStorage.getItem('todos-react-hooks-typescript') as string)
         dispatch({type: UPDATE_LIST, data: newList})
         // console.log('getItem')
+        let allCompletedFlag = true
+        for (let i = 0; i < newList.length; i++) {
+            if (!newList[i].completed) {
+                allCompletedFlag = false
+                break
+            }
+        }
+        setAllCompleted(allCompletedFlag)
 
         // router
         const router = new Router()
@@ -132,7 +141,7 @@ const App: React.FC = () => {
                         />
                         <label htmlFor="toggle-all">Mark all as complete</label>
                         <ul className="todo-list">
-                            <AppContest.Provider value={{list, dispatch}}>
+                            <AppContest.Provider value={{list, dispatch, setAllCompleted}}>
                                 {filterList.map((item) => <TodoItem item={item} key={item.id}/>)}
                             </AppContest.Provider>
                         </ul>
