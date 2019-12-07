@@ -127,7 +127,6 @@ const App: React.FC = () => {
         // const newList = JSON.parse(localStorage.getItem('todos-react-hooks-typescript') === null ? '[]' : localStorage.getItem('todos-react-hooks-typescript') as string)
 
         // console.log('getItem')
-        checkAllCompleted(newList)
 
         // router
         const router = new Router()
@@ -147,6 +146,7 @@ const App: React.FC = () => {
             query: getTodos
         }).then(result => {
             dispatch({type: UPDATE_LIST, data: result.data.todos})
+            checkAllCompleted(result.data.todos)
         });
     }, [])
     let filterList = list
