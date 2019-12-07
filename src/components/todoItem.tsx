@@ -1,7 +1,6 @@
-import React, {useContext, useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 
-import {ListItem, UPDATE_LIST} from "../interfaces";
-import {AppContest} from "../App";
+import {ListItem} from "../interfaces";
 
 interface Props {
     item: ListItem
@@ -10,21 +9,20 @@ interface Props {
 
 const TodoItem: React.FC<Props> = (props) => {
     const {item} = props
-    const {list, dispatch, checkAllCompleted} = useContext(AppContest)
 
     const toggleCompleted: (event: React.ChangeEvent<HTMLInputElement>) => void = (event) => {
-        const newList = list.map((i: ListItem) => { // 需要指定i类型为ListItem
-            return item.id === i.id ? {...i, completed: event.target.checked} : i
-        })
-        dispatch({type: UPDATE_LIST, data: newList})
-        checkAllCompleted(newList)
+        // const newList = list.map((i: ListItem) => { // 需要指定i类型为ListItem
+        //     return item.id === i.id ? {...i, completed: event.target.checked} : i
+        // })
+        // dispatch({type: UPDATE_LIST, data: newList})
+        // checkAllCompleted(newList)
     }
     const handleDestroy = () => {
-        const newList = list.filter((i: ListItem) => {
-            return item.id !== i.id
-        })
-        dispatch({type: UPDATE_LIST, data: newList})
-        checkAllCompleted(newList)
+        // const newList = list.filter((i: ListItem) => {
+        //     return item.id !== i.id
+        // })
+        // dispatch({type: UPDATE_LIST, data: newList})
+        // checkAllCompleted(newList)
     }
     const [editing, setEditing] = useState(false)
     const toggleEditing = () => {
@@ -51,10 +49,10 @@ const TodoItem: React.FC<Props> = (props) => {
         if (!titleTrim) {
             handleDestroy()
         } else {
-            const newList = list.map((i: ListItem) => {
-                return item.id === i.id ? {...i, title} : i
-            })
-            dispatch({type: UPDATE_LIST, data: newList})
+            // const newList = list.map((i: ListItem) => {
+            //     return item.id === i.id ? {...i, title} : i
+            // })
+            // dispatch({type: UPDATE_LIST, data: newList})
         }
     }
     const handleKeyUp: (event: React.KeyboardEvent<HTMLInputElement>) => void = (event) => {
