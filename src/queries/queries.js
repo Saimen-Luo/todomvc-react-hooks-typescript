@@ -20,4 +20,14 @@ const addTodo = gql`
     }
 `
 
-export {getTodos, addTodo}
+const toggleAllCompleted = gql`
+    mutation ToggleAllCompleted($completed: Boolean){
+      toggleAllCompleted(completed: $completed){
+        n
+        nModified
+        ok
+      }
+    }
+`
+
+export {getTodos, addTodo, toggleAllCompleted}

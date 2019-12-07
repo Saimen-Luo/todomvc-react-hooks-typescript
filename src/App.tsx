@@ -14,7 +14,7 @@ import {
     UPDATE_LIST
 } from "./interfaces";
 import TodoItem from "./components/todoItem";
-import {getTodos, addTodo} from "./queries/queries";
+import {getTodos, addTodo, toggleAllCompleted} from "./queries/queries";
 
 
 export const AppContest: Context<any> = createContext({}) // 需要引入Context并指定类型为Context<any>
@@ -80,12 +80,24 @@ const App: React.FC = () => {
         }
     }
     const [allCompleted, setAllCompleted] = useState(false)
-    const toggleAll: (event: React.ChangeEvent<HTMLInputElement>) => void = (event) => {
+    const toggleAll: (event: React.ChangeEvent<HTMLInputElement>) => void = async (event) => {
         setAllCompleted(event.target.checked)
         const newList = list.map((item) => {
             return {...item, completed: event.target.checked}
         })
         dispatch({type: UPDATE_LIST, data: newList})
+        const result = await client.mutate({
+            mutation: toggleAllCompleted,
+            variables: {
+                completed: event.target.checked
+            }
+        })
+        // console.log(result)
+        if (result.data.toggleAllCompleted.ok) {
+            console.log('toggleAllCompleted-服务器同步成功')
+        } else {
+            alert('toggleAllCompleted-服务器同步失败')
+        }
     }
     const itemsLeft = list.filter((item) => {
         return !item.completed
