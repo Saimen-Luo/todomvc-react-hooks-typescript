@@ -1,5 +1,7 @@
 ///<reference path="index.tsx"/>
 import React, {useState, useReducer, createContext, Context, useEffect} from 'react';
+
+import ApolloClient from 'apollo-boost';
 import {Router} from "director/build/director.min";
 // Try `npm install @types/director` if it exists or add a new declaration (.d.ts) file containing `declare module 'director/build/director.min';`
 
@@ -12,8 +14,14 @@ import {
     UPDATE_LIST
 } from "./interfaces";
 import TodoItem from "./components/todoItem";
+import {getTodos, addTodo} from "./queries/queries";
+
 
 export const AppContest: Context<any> = createContext({}) // 需要引入Context并指定类型为Context<any>
+
+const client = new ApolloClient({
+    uri: 'http://localhost:5000/graphql',
+});
 
 const App: React.FC = () => {
     const initList: ListItem[] = [
@@ -35,7 +43,7 @@ const App: React.FC = () => {
             // 方案 1. 所有case直接合并为一个 UPDATE_LIST
             // 方案 2. 保持case分开，把修改逻辑放到reducer这里，Action要用联合类型，data?可选
             case UPDATE_LIST:
-                localStorage.setItem('todos-react-hooks-typescript', JSON.stringify(action.data))
+                // localStorage.setItem('todos-react-hooks-typescript', JSON.stringify(action.data))
                 return action.data
             default:
                 return list
@@ -48,18 +56,25 @@ const App: React.FC = () => {
         setTitle(event.target.value)
     }
 
-    const handleKeyUp: (event: React.KeyboardEvent<HTMLInputElement>) => void = (event) => {
+    const handleKeyUp: (event: React.KeyboardEvent<HTMLInputElement>) => void = async (event) => {
         if (event.keyCode === 13) {
             const titleTrim = title.trim()
             if (titleTrim) {
-                const newList = [...list, {
-                    id: list.length ? list[list.length - 1].id + 1 : 1,
-                    title: titleTrim,
-                    completed: false
-                }]
-                dispatch({
-                    type: UPDATE_LIST, data: newList
+                // const newList = [...list, {
+                //     id: list.length ? list[list.length - 1].id + 1 : 1,
+                //     title: titleTrim,
+                //     completed: false
+                // }]
+                const result = await client.mutate({
+                    mutation: addTodo,
+                    variables: {
+                        title: titleTrim,
+                        completed: false
+                    }
                 })
+                // console.log(result)
+                dispatch({type: UPDATE_LIST, data: [...list, result.data.addTodo]})
+
             }
             setTitle('')
         }
@@ -84,8 +99,8 @@ const App: React.FC = () => {
     const [currentHash, setCurrentHash] = useState('/')
     // 持久化 读取
     useEffect(() => {
-        const newList = JSON.parse(localStorage.getItem('todos-react-hooks-typescript') === null ? '[]' : localStorage.getItem('todos-react-hooks-typescript') as string)
-        dispatch({type: UPDATE_LIST, data: newList})
+        // const newList = JSON.parse(localStorage.getItem('todos-react-hooks-typescript') === null ? '[]' : localStorage.getItem('todos-react-hooks-typescript') as string)
+
         // console.log('getItem')
 
         // router
@@ -101,6 +116,12 @@ const App: React.FC = () => {
             }
         })
         router.init()
+
+        client.query({
+            query: getTodos
+        }).then(result => {
+            dispatch({type: UPDATE_LIST, data: result.data.todos})
+        });
     }, [])
     let filterList = list
     if (currentHash === '/active') {
