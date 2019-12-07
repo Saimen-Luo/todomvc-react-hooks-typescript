@@ -10,18 +10,21 @@ interface Props {
 
 const TodoItem: React.FC<Props> = (props) => {
     const {item} = props
-    const {list, dispatch} = useContext(AppContest)
+    const {list, dispatch, checkAllCompleted} = useContext(AppContest)
+
     const toggleCompleted: (event: React.ChangeEvent<HTMLInputElement>) => void = (event) => {
         const newList = list.map((i: ListItem) => { // 需要指定i类型为ListItem
             return item.id === i.id ? {...i, completed: event.target.checked} : i
         })
         dispatch({type: UPDATE_LIST, data: newList})
+        checkAllCompleted(newList)
     }
     const handleDestroy = () => {
         const newList = list.filter((i: ListItem) => {
             return item.id !== i.id
         })
         dispatch({type: UPDATE_LIST, data: newList})
+        checkAllCompleted(newList)
     }
     const [editing, setEditing] = useState(false)
     const toggleEditing = () => {
