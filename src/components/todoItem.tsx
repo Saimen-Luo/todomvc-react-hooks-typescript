@@ -3,7 +3,7 @@ import {useMutation} from "@apollo/react-hooks";
 
 
 import {ListItem} from "../interfaces";
-import {delTodo, getTodos} from "../queries/queries";
+import {delTodo, getTodos, toggleCompletedMT} from "../queries/queries";
 
 
 interface Props {
@@ -13,6 +13,7 @@ interface Props {
 
 const TodoItem: React.FC<Props> = (props) => {
     const [DelTodo] = useMutation(delTodo)
+    const [ToggleCompletedMT] = useMutation(toggleCompletedMT)
 
     const {item} = props
 
@@ -22,6 +23,10 @@ const TodoItem: React.FC<Props> = (props) => {
         // })
         // dispatch({type: UPDATE_LIST, data: newList})
         // checkAllCompleted(newList)
+        ToggleCompletedMT({
+            variables: {id: item.id, completed: event.target.checked},
+            refetchQueries: [{query: getTodos}]
+        })
     }
     const handleDestroy = () => {
         // const newList = list.filter((i: ListItem) => {
