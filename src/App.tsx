@@ -11,13 +11,14 @@ import {
     ListItem
 } from "./interfaces";
 import TodoItem from "./components/todoItem";
-import {getTodos, addTodo, toggleAllCompleted} from "./queries/queries";
+import {getTodos, addTodo, toggleAllCompleted, clearCompletedMT} from "./queries/queries";
 
 
 const App: React.FC = () => {
     const {loading, error, data} = useQuery(getTodos)
     const [AddTodo] = useMutation(addTodo)
     const [ToggleAllCompleted] = useMutation(toggleAllCompleted)
+    const [ClearCompletedMT] = useMutation(clearCompletedMT)
     // console.log(loading, error, data)
     let list: ListItem[] = data === undefined ? [] : data.todos
 
@@ -68,6 +69,9 @@ const App: React.FC = () => {
         //     return !item.completed
         // })
         // dispatch({type: UPDATE_LIST, data: newList})
+        ClearCompletedMT({
+            refetchQueries: [{query: getTodos}]
+        })
     }
     const [currentHash, setCurrentHash] = useState('/')
 

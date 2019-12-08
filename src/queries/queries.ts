@@ -59,5 +59,13 @@ const updateTitle = gql`
       }
     }
 `
+const clearCompletedMT = gql`
+    mutation {
+      clearCompleted{
+        n
+        ok
+      }
+    }
+`
 
-export {getTodos, addTodo, toggleAllCompleted, delTodo, toggleCompletedMT, updateTitle}
+export {getTodos, addTodo, toggleAllCompleted, delTodo, toggleCompletedMT, updateTitle, clearCompletedMT}
