@@ -50,4 +50,14 @@ const toggleCompletedMT = gql`
     }
 `
 
-export {getTodos, addTodo, toggleAllCompleted, delTodo, toggleCompletedMT}
+const updateTitle = gql`
+    mutation UpdateTitle($id: ID, $title: String){
+      updateTitle(id: $id,title: $title){
+        n
+        nModified
+        ok
+      }
+    }
+`
+
+export {getTodos, addTodo, toggleAllCompleted, delTodo, toggleCompletedMT, updateTitle}

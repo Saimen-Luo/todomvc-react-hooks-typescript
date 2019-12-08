@@ -3,7 +3,7 @@ import {useMutation} from "@apollo/react-hooks";
 
 
 import {ListItem} from "../interfaces";
-import {delTodo, getTodos, toggleCompletedMT} from "../queries/queries";
+import {delTodo, getTodos, toggleCompletedMT, updateTitle} from "../queries/queries";
 
 
 interface Props {
@@ -14,6 +14,8 @@ interface Props {
 const TodoItem: React.FC<Props> = (props) => {
     const [DelTodo] = useMutation(delTodo)
     const [ToggleCompletedMT] = useMutation(toggleCompletedMT)
+    const [UpdateTitle] = useMutation(updateTitle)
+
 
     const {item} = props
 
@@ -68,6 +70,10 @@ const TodoItem: React.FC<Props> = (props) => {
             //     return item.id === i.id ? {...i, title} : i
             // })
             // dispatch({type: UPDATE_LIST, data: newList})
+            UpdateTitle({
+                variables: {id: item.id, title: titleTrim},
+                refetchQueries: [{query: getTodos}]
+            })
         }
     }
     const handleKeyUp: (event: React.KeyboardEvent<HTMLInputElement>) => void = (event) => {
