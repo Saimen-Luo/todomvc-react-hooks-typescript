@@ -30,4 +30,14 @@ const toggleAllCompleted = gql`
     }
 `
 
-export {getTodos, addTodo, toggleAllCompleted}
+const delTodo = gql`
+    mutation DelTodo($id: ID){
+      delTodo (id: $id){
+        id
+        title
+        completed
+      }
+    }
+`
+
+export {getTodos, addTodo, toggleAllCompleted, delTodo}

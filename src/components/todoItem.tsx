@@ -1,6 +1,10 @@
 import React, {useState, useRef, useEffect} from 'react';
+import {useMutation} from "@apollo/react-hooks";
+
 
 import {ListItem} from "../interfaces";
+import {delTodo, getTodos} from "../queries/queries";
+
 
 interface Props {
     item: ListItem
@@ -8,6 +12,8 @@ interface Props {
 
 
 const TodoItem: React.FC<Props> = (props) => {
+    const [DelTodo] = useMutation(delTodo)
+
     const {item} = props
 
     const toggleCompleted: (event: React.ChangeEvent<HTMLInputElement>) => void = (event) => {
@@ -23,6 +29,10 @@ const TodoItem: React.FC<Props> = (props) => {
         // })
         // dispatch({type: UPDATE_LIST, data: newList})
         // checkAllCompleted(newList)
+        DelTodo({
+            variables: {id: item.id},
+            refetchQueries: [{query: getTodos}]
+        })
     }
     const [editing, setEditing] = useState(false)
     const toggleEditing = () => {
